@@ -1,0 +1,11 @@
+{
+  "http.port" : 8080,
+   "cassandra": {
+        "seeds": ["localhost"],
+        "reconnect": {
+            "name": "exponential",
+            "base_delay": 1000,
+            "max_delay": 10000
+        }
+    }
+}

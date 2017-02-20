@@ -1,0 +1,83 @@
+= Vert.x Gradle Cassandra Starter
+
+This project is a template to start your own Vert.x 3 project using Gradle,Cassandra as db.
+
+Reference a lot from https://github.com/vert-x3/vertx-gradle-starter && 
+https://github.com/cescoffier/my-vertx-first-app && https://github.com/cyngn/exovert
+
+== Prerequisites
+
+* JDK 8+
+
+== Running the project
+
+Run Cassandra using docker container:
+[source]
+----
+docker run --name some-cassandra -d -p 7000:7000 -p 7001:7001 -p 7199:7199  -p 9042:9042 -p 9160:9160 cassandra 
+----
+
+bin/cqlsh to run Cassandra script:
+
+[source]
+----
+CREATE KEYSPACE IF NOT EXISTS "ks"
+  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
+
+CREATE TYPE IF NOT EXISTS ks.formatter (
+   element varchar,
+   name varchar,
+   type varchar,
+   id varchar,
+   gateway varchar
+);
+
+
+CREATE TABLE IF NOT EXISTS ks.messages (
+    id varchar,
+    origin varchar,
+    message_to varchar,
+    message_from varchar,
+    category varchar,
+    date timestamp,
+    message varchar,
+    status varchar, 
+    meta list<frozen<formatter>>,
+    PRIMARY KEY (id)
+);
+----
+
+Once you have retrieved the project, you can check that everything works with:
+
+[source]
+----
+./gradlew test run
+----
+
+The command compiles the project and runs the tests, then  it launches the application, so you can check by yourself. Open your browser to http://localhost:8080. You should see a _Service from Vertx Gradle Cansandra Starter_ message.
+
+
+== Generating more CURD and REST API 
+----
+mkdir ../generated && java -jar build/libs/exovert-3.2.1.0-SNAPSHOT-fat.jar --name ProjectName -g --create -k ks  -db localhost -n com.ypzhuang -s -r  -o ../generated
+----
+
+please reference https://github.com/cyngn/exovert
+
+== Building the project
+
+To build the project, just use:
+
+----
+./gradlew shadowJar
+----
+
+It generates a _fat-jar_ in the `build/libs` directory.
+
+----
+java -jar build/libs/vertx-gradle-cansandra-starter-1.0-SNAPSHOT-fat.jar -conf conf.json
+----
+
+
+    
+    
